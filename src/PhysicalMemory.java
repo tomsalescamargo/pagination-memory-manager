@@ -1,39 +1,54 @@
 public class PhysicalMemory {
-    private final int[] physicalMemory;
-    private final int pageSize;
+    private final byte[] physicalMemory;
+    private final int frameSize;
 
-    public PhysicalMemory(int size, int pageSize) {
-        this.physicalMemory = new int[size];
-        this.pageSize = pageSize;
 
-        for (int i = 0; i < size; i++) {
-            this.physicalMemory[i] = i + 10;
-        }
+    private final int numberOfFrames;
+
+    public PhysicalMemory(int size, int frameSize) {
+        this.physicalMemory = new byte[size];
+        this.frameSize = frameSize;
+        this.numberOfFrames = this.calculateNumberOfFrames();
     }
 
-    public int getAddressFrame(int physicalAddress) {
-        if (physicalAddress >= this.physicalMemory.length) {
-            throw new IllegalArgumentException("Invalid physical address");
+    public int getAddressByFrame(int frame) {
+        if (frame < 0 || frame >= this.getNumberOfFrames()) {
+            throw new IllegalArgumentException("Frame out of bounds: " + frame);
         }
 
-        return physicalAddress / this.pageSize;
+        return frame * this.frameSize;
+    }
+
+    public int getFrameByAddress(int physicalAddress) {
+        if (physicalAddress < 0 || physicalAddress >= this.physicalMemory.length) {
+            throw new IllegalArgumentException("Physical address out of bounds: " +  physicalAddress);
+        }
+
+        return physicalAddress / this.frameSize;
+    }
+
+    public boolean writeByte(int physicalAddress, byte data) {
+        if (physicalAddress < 0 || physicalAddress >= this.physicalMemory.length) {
+            throw new IllegalArgumentException("Physical address out of bounds: " + physicalAddress);
+        }
+
+        this.physicalMemory[physicalAddress] = data;
+        return true;
     }
 
     public int readByte(int physicalAddress) {
-        if (physicalAddress >= this.physicalMemory.length) {
-            throw new IllegalArgumentException("Invalid physical address");
+        if (physicalAddress < 0 || physicalAddress >= this.physicalMemory.length) {
+            throw new IllegalArgumentException("Physical address out of bounds: " + physicalAddress);
         }
 
         return this.physicalMemory[physicalAddress];
     }
 
-    public void alocateMemory(int addressStart, int addressLimit) {
-        if (addressStart >= this.physicalMemory.length || addressLimit >= this.physicalMemory.length) {
-            throw new IllegalArgumentException("Invalid physical address");
-        }
-        if (addressStart > addressLimit) {
-            throw new IllegalArgumentException("Address Start must be bigger than AddressLimit");
-        }
+    private int calculateNumberOfFrames() {
+        return this.physicalMemory.length / this.frameSize;
+    }
 
+    public int getNumberOfFrames() {
+        return numberOfFrames;
     }
 }
