@@ -1,3 +1,5 @@
+import java.util.Random;
+
 public class LogicalMemory {
     private final byte[] logicalMemory;
     private final int pid;
@@ -9,9 +11,8 @@ public class LogicalMemory {
         this.logicalMemory = new byte[processLength];
         this.pageSize = pageSize;
 
-        for (byte i = 0; i < processLength; i++) {
-            this.logicalMemory[i] = i;
-        }
+        Random random = new Random();
+        random.nextBytes(this.logicalMemory);
 
         this.numberOfPages = this.calculateNumberOfPages();
     }
