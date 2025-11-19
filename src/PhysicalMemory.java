@@ -36,7 +36,7 @@ public class PhysicalMemory {
         return true;
     }
 
-    public int readByte(int physicalAddress) {
+    public byte readByte(int physicalAddress) {
         if (physicalAddress < 0 || physicalAddress >= this.physicalMemory.length) {
             throw new IllegalArgumentException("Physical address out of bounds: " + physicalAddress);
         }
