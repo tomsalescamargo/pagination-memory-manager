@@ -4,11 +4,11 @@ import java.util.Map;
 public class PagesTable {
     Map<Integer, Integer> pagesTable;
 
-    public PagesTable(int numberOfPages, int[] freeFramesToBeAlocated) {
+    public PagesTable(int numberOfPages, int[] allocatedFrames) {
         this.pagesTable = new LinkedHashMap<>();
 
         for (int i = 0; i < numberOfPages; i++) {
-            pagesTable.putIfAbsent(i, freeFramesToBeAlocated[i]);
+            pagesTable.putIfAbsent(i, allocatedFrames[i]);
         }
 
     }
