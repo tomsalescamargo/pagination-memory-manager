@@ -1,8 +1,6 @@
 public class PhysicalMemory {
     private final byte[] physicalMemory;
     private final int frameSize;
-
-
     private final int numberOfFrames;
 
     public PhysicalMemory(int size, int frameSize) {
@@ -27,13 +25,12 @@ public class PhysicalMemory {
         return physicalAddress / this.frameSize;
     }
 
-    public boolean writeByte(int physicalAddress, byte data) {
+    public void writeByte(int physicalAddress, byte data) {
         if (physicalAddress < 0 || physicalAddress >= this.physicalMemory.length) {
             throw new IllegalArgumentException("Physical address out of bounds: " + physicalAddress);
         }
 
         this.physicalMemory[physicalAddress] = data;
-        return true;
     }
 
     public byte readByte(int physicalAddress) {
