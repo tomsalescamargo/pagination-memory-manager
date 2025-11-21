@@ -57,6 +57,10 @@ public class LogicalMemory {
         return (this.logicalMemory.length + pageSize - 1) / this.pageSize;
     }
     public int getNumberOfPages() {
-        return numberOfPages;
+        return this.numberOfPages;
+    }
+
+    public int getSize() {
+        return this.logicalMemory.length;
     }
 }

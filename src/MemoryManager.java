@@ -8,7 +8,7 @@ public class MemoryManager {
     private final Queue<Integer> freeFrames = new LinkedList<>();
     private final Map<Integer, LogicalMemory> logicalMemoriesMap = new HashMap<>();
     private final Map<Integer, PagesTable> pagesTableMap = new HashMap<>();
-    private final FrameState[] framesState;
+    private final FrameState[] framesState; // "Frame Table"
 
     public MemoryManager(int physicalMemorySize, int pageSize, int maxProcessSize) {
         this.physicalMemorySize = physicalMemorySize;
@@ -88,6 +88,30 @@ public class MemoryManager {
         return data;
     }
 
+    public String getProcessPageTableInfo(int pid) {
+        if (!this.pagesTableMap.containsKey(pid)) {
+            throw new IllegalArgumentException("Process ID " + pid + " not found.");
+        }
+
+        PagesTable pagesTable = this.pagesTableMap.get(pid);
+        LogicalMemory logicalMemory = this.logicalMemoriesMap.get(pid);
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("PID: ").append(pid).append("\n");
+        sb.append("Tamanho Total: ").append(this.getProcessSize(pid)).append(" bytes\n");
+        sb.append("Tabela de Páginas:\n");
+        sb.append("Página  |  Quadro\n");
+        sb.append("------- | -------\n");
+
+        int numPages = logicalMemory.getNumberOfPages();
+        for (int i = 0; i < numPages; i++) {
+            int frame = pagesTable.getFrameByPage(i);
+            sb.append(String.format("   %d    |    %d\n", i, frame));
+        }
+
+        return sb.toString();
+    }
+
     public List<String> getMemoryReport() {
         List<String> report = new ArrayList<>();
         int numberOfFrames = this.physicalMemory.getNumberOfFrames();
@@ -131,6 +155,12 @@ public class MemoryManager {
 
     public float getFreeMemoryPercentage() {
         return ((float) this.freeFrames.size() / this.physicalMemory.getNumberOfFrames()) * 100;
+    }
+
+    public Integer getProcessSize(int pid) {
+        LogicalMemory logicalMemory = this.logicalMemoriesMap.get(pid);
+        if (logicalMemory == null) return null;
+        return logicalMemory.getSize();
     }
 
     public static class FrameState {
