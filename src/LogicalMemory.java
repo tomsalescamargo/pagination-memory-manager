@@ -11,8 +11,11 @@ public class LogicalMemory {
         this.logicalMemory = new byte[processLength];
         this.pageSize = pageSize;
 
+        // Fills bytes array randomly, avoiding 0
         Random random = new Random();
-        random.nextBytes(this.logicalMemory);
+        for (int i = 0; i < processLength; i++) {
+            this.logicalMemory[i] = (byte) (random.nextInt(100) + 1);
+        }
 
         this.numberOfPages = this.calculateNumberOfPages();
     }
