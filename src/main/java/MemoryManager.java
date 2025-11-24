@@ -100,7 +100,7 @@ public class MemoryManager {
         sb.append("PID: ").append(pid).append("\n");
         sb.append("Total Size: ").append(this.getProcessSize(pid)).append(" bytes\n");
         sb.append("Page Table:\n");
-        sb.append("Page  |  Frame\n");
+        sb.append("Page    |   Frame\n");
         sb.append("------- | -------\n");
 
         int numPages = logicalMemory.getNumberOfPages();
