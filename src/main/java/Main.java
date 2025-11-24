@@ -5,27 +5,27 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("=== SIMULADOR DE GERENCIAMENTO DE MEMÓRIA (PAGINAÇÃO) ===");
-        System.out.println("Configuração Inicial do Sistema:");
+        System.out.println("=== MEMORY MANAGEMENT SIMULATOR (PAGING) ===");
+        System.out.println("System Initial Configuration:");
 
-        System.out.print("Digite o tamanho da Memória Física (ex: 64, 128): ");
+        System.out.print("Enter Physical Memory size (e.g., 64, 128): ");
         int physicalSize = scanner.nextInt();
         if (!isPowerOfTwo(physicalSize)) {
-            System.out.println("Erro: O tamanho da memória deve ser potência de 2 (ex: 64, 128, 256)!");
+            System.out.println("Error: Memory size must be a power of 2 (e.g., 64, 128, 256)!");
             return;
         }
 
-        System.out.print("Digite o tamanho da Página/Quadro (ex: 4, 8): ");
+        System.out.print("Enter Page/Frame size (e.g., 4, 8): ");
         int pageSize = scanner.nextInt();
         if (!isPowerOfTwo(pageSize)) {
-            System.out.println("Erro: O tamanho da página deve ser potência de 2!");
+            System.out.println("Error: Page size must be a power of 2!");
             return;
         }
 
-        System.out.print("Digite o tamanho MÁXIMO por processo (ex: 16, 32): ");
+        System.out.print("Enter MAXIMUM process size (e.g., 16, 32): ");
         int maxProcessSize = scanner.nextInt();
         if (!isPowerOfTwo(maxProcessSize)) {
-            System.out.println("Erro: O tamanho máximo do processo deve ser potência de 2!");
+            System.out.println("Error: Maximum process size must be a power of 2!");
             return;
         }
 
@@ -34,18 +34,18 @@ public class Main {
         int option = 0;
         do {
             System.out.println("\n------------------------------------------------");
-            System.out.println("MENU PRINCIPAL");
-            System.out.println("1. Criar Processo");
-            System.out.println("2. Visualizar Memória Física (Mapa de Quadros)");
-            System.out.println("3. Visualizar Tabela de Páginas de um Processo");
-            System.out.println("4. Ler Endereço Lógico (Simular MMU)");
-            System.out.println("0. Sair");
-            System.out.print("Escolha uma opção: ");
+            System.out.println("MAIN MENU");
+            System.out.println("1. Create Process");
+            System.out.println("2. View Physical Memory (Frame Map)");
+            System.out.println("3. View Process Page Table");
+            System.out.println("4. Read Logical Address (Simulate MMU)");
+            System.out.println("0. Exit");
+            System.out.print("Choose an option: ");
 
             try {
                 option = scanner.nextInt();
             } catch (Exception e) {
-                scanner.nextLine();
+                scanner.nextLine(); // Clear buffer
                 option = -1;
             }
 
@@ -63,10 +63,10 @@ public class Main {
                     readLogicalAddressUI(scanner, memoryManager);
                     break;
                 case 0:
-                    System.out.println("Encerrando simulador...");
+                    System.out.println("Exiting simulator...");
                     break;
                 default:
-                    System.out.println("Opção inválida! Tente novamente.");
+                    System.out.println("Invalid option! Please try again.");
             }
 
         } while (option != 0);
@@ -75,25 +75,25 @@ public class Main {
     }
 
     private static void createProcessUI(Scanner scanner, MemoryManager manager) {
-        System.out.println("\n[CRIAR NOVO PROCESSO]");
-        System.out.print("Informe o PID (ID do processo): ");
+        System.out.println("\n[CREATE NEW PROCESS]");
+        System.out.print("Enter PID (Process ID): ");
         int pid = scanner.nextInt();
-        System.out.print("Informe o tamanho do processo (bytes): ");
+        System.out.print("Enter process size (bytes): ");
         int size = scanner.nextInt();
 
         try {
             manager.createProcess(pid, size);
-            System.out.println("Sucesso! Processo " + pid + " criado e alocado na memória.");
+            System.out.println("Success! Process " + pid + " created and allocated in memory.");
         } catch (Exception e) {
-            System.out.println("ERRO ao criar processo: " + e.getMessage());
+            System.out.println("ERROR creating process: " + e.getMessage());
         }
     }
 
     private static void visualizeMemoryUI(MemoryManager manager) {
-        System.out.println("\n[VISUALIZAÇÃO DA MEMÓRIA FÍSICA]");
+        System.out.println("\n[PHYSICAL MEMORY VISUALIZATION]");
         float freePercent = manager.getFreeMemoryPercentage();
-        System.out.printf("Memória Livre: %.2f%%\n", freePercent);
-        System.out.println("Mapa de Quadros:");
+        System.out.printf("Free Memory: %.2f%%\n", freePercent);
+        System.out.println("Frame Map:");
 
         List<String> report = manager.getMemoryReport();
         for (String line : report) {
@@ -102,40 +102,40 @@ public class Main {
     }
 
     private static void visualizePagesTableUI(Scanner scanner, MemoryManager manager) {
-        System.out.println("\n[VISUALIZAR TABELA DE PÁGINAS]");
-        System.out.print("Informe o PID do processo: ");
+        System.out.println("\n[VIEW PAGE TABLE]");
+        System.out.print("Enter Process PID: ");
         int pid = scanner.nextInt();
 
         try {
             String tableInfo = manager.getProcessPageTableInfo(pid);
             System.out.println(tableInfo);
         } catch (Exception e) {
-            System.out.println("Erro: " + e.getMessage());
+            System.out.println("Error: " + e.getMessage());
         }
     }
 
     private static void readLogicalAddressUI(Scanner scanner, MemoryManager manager) {
-        System.out.println("\n[LER ENDEREÇO LÓGICO]");
-        System.out.print("Informe o PID do processo: ");
+        System.out.println("\n[READ LOGICAL ADDRESS]");
+        System.out.print("Enter Process PID: ");
         int pid = scanner.nextInt();
 
         Integer processSize = manager.getProcessSize(pid);
         if (processSize == null) {
-            System.out.println("Erro: Processo não encontrado!");
+            System.out.println("Error: Process not found!");
             return;
         }
 
-        System.out.print("Informe o endereço lógico (0 a " + (processSize - 1) + "): ");
+        System.out.print("Enter logical address (0 to " + (processSize - 1) + "): ");
         int logicalAddress = scanner.nextInt();
 
         try {
             byte data = manager.readByLogicalAddress(pid, logicalAddress);
             System.out.println("------------------------------------------------");
-            System.out.println("Dado lido com sucesso: " + data);
-            System.out.println("(O Gerenciador traduziu o endereço lógico " + logicalAddress +
-                    " para o endereço físico correspondente e buscou o valor)");
+            System.out.println("Data successfully read: " + data);
+            System.out.println("(The Manager translated logical address " + logicalAddress +
+                    " to the corresponding physical address and fetched the value)");
         } catch (Exception e) {
-            System.out.println("Erro na leitura: " + e.getMessage());
+            System.out.println("Read error: " + e.getMessage());
         }
     }
 

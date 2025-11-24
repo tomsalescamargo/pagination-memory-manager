@@ -98,9 +98,9 @@ public class MemoryManager {
 
         StringBuilder sb = new StringBuilder();
         sb.append("PID: ").append(pid).append("\n");
-        sb.append("Tamanho Total: ").append(this.getProcessSize(pid)).append(" bytes\n");
-        sb.append("Tabela de Páginas:\n");
-        sb.append("Página  |  Quadro\n");
+        sb.append("Total Size: ").append(this.getProcessSize(pid)).append(" bytes\n");
+        sb.append("Page Table:\n");
+        sb.append("Page  |  Frame\n");
         sb.append("------- | -------\n");
 
         int numPages = logicalMemory.getNumberOfPages();
@@ -119,12 +119,12 @@ public class MemoryManager {
         for (int frame = 0; frame < numberOfFrames; frame++) {
             FrameState frameState = this.framesState[frame];
 
-            String frameOwner = (frameState.isFree) ? "[LIVRE]" : "[PROCESSO " + frameState.pidOwner + "]";
+            String frameOwner = (frameState.isFree) ? "[FREE]" : "[PROCESS " + frameState.pidOwner + "]";
             String frameContent = this.getFrameContentString(frame);
 
             // Uses StringBuilder to reduce string concatenation overhead.
             StringBuilder sb = new StringBuilder();
-            sb.append("Quadro ")
+            sb.append("Frame ")
                     .append(frameState.frameNumber)
                     .append(": ")
                     .append(frameOwner)
